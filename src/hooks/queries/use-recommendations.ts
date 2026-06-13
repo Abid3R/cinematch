@@ -423,7 +423,8 @@ export function useRankedSimilar(
         ...Array.from(sources.ratings, ([id, entry]) => [id, entry.details] as const),
         [anchor.id, anchor],
       ]);
-      return rankSimilar(anchor, similar.results, profile, { limit }, detailsMap);
+      const anchorMovie: Movie = { ...anchor, genre_ids: anchor.genres?.map((g) => g.id) ?? [] };
+      return rankSimilar(anchorMovie, similar.results, profile, { limit }, detailsMap);
     },
     enabled:
       enabled &&

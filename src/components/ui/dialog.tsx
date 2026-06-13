@@ -72,7 +72,18 @@ export function Dialog({ open, onOpenChange, children }: DialogProps): JSX.Eleme
   );
 }
 
-export interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
+export interface DialogContentProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  // Drag events — Framer Motion redefines these with incompatible signatures
+  | "onDrag" | "onDragCapture" | "onDragEnd" | "onDragEndCapture"
+  | "onDragEnter" | "onDragEnterCapture" | "onDragExit" | "onDragExitCapture"
+  | "onDragLeave" | "onDragLeaveCapture" | "onDragOver" | "onDragOverCapture"
+  | "onDragStart" | "onDragStartCapture" | "onDrop" | "onDropCapture"
+  // Animation events — Framer Motion redefines these with incompatible signatures
+  | "onAnimationStart" | "onAnimationStartCapture"
+  | "onAnimationEnd" | "onAnimationEndCapture"
+  | "onAnimationIteration" | "onAnimationIterationCapture"
+> {
   /** When false, removes the close (X) button in the header. */
   showCloseButton?: boolean;
 }

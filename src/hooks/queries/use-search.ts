@@ -30,7 +30,7 @@ import type { Movie, PaginatedResponse } from "@/types/tmdb";
 import { useDebouncedValue } from "./use-debounced-value";
 import { queryKeys } from "./keys";
 
-interface UseSearchOptions extends Omit<SearchOptions, "page"> {
+export interface UseSearchOptions extends Omit<SearchOptions, "page"> {
   /** Override the debounce window. Defaults to 300ms. */
   debounceMs?: number;
   /** Disable the query (e.g. when the search panel is closed). */

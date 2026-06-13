@@ -101,7 +101,7 @@ function toPaletteItem(result: MultiSearchResult): PaletteItem | null {
   if (result.media_type === "person") {
     const known = result.known_for
       ?.slice(0, 2)
-      .map((k) => ("title" in k ? k.title : k.name))
+      .map((k) => k.title)
       .filter(Boolean)
       .join(", ");
     return {
