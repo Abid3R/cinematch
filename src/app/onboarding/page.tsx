@@ -477,8 +477,8 @@ function MovieStep({
               title={m.title}
             >
               <MoviePoster
-                title={m.title}
-                posterPath={m.poster_path}
+                alt={m.title}
+                path={m.poster_path}
                 size="md"
                 className="aspect-[2/3] w-full"
               />
