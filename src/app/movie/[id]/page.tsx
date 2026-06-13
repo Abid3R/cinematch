@@ -267,7 +267,7 @@ export default function MovieDetailsPage({ params }: PageProps): JSX.Element {
               ) : null}
 
               <Button
-                variant={inWatchlist ? "default" : "outline"}
+                variant={inWatchlist ? "primary" : "outline"}
                 onClick={() => movieForStore && toggleWatchlist(movieForStore)}
               >
                 {inWatchlist ? (
@@ -279,7 +279,7 @@ export default function MovieDetailsPage({ params }: PageProps): JSX.Element {
               </Button>
 
               <Button
-                variant={isWatched ? "default" : "outline"}
+                variant={isWatched ? "primary" : "outline"}
                 onClick={() => movieForStore && toggleWatched(movieForStore)}
                 aria-pressed={isWatched}
               >
@@ -292,7 +292,7 @@ export default function MovieDetailsPage({ params }: PageProps): JSX.Element {
               </Button>
 
               <Button
-                variant={likeState === "liked" ? "default" : "outline"}
+                variant={likeState === "liked" ? "primary" : "outline"}
                 onClick={() => movieForStore && toggleLike(movieForStore)}
                 aria-pressed={likeState === "liked"}
               >
@@ -301,7 +301,7 @@ export default function MovieDetailsPage({ params }: PageProps): JSX.Element {
               </Button>
 
               <Button
-                variant={likeState === "disliked" ? "default" : "outline"}
+                variant={likeState === "disliked" ? "primary" : "outline"}
                 onClick={() => movieForStore && toggleDislike(movieForStore)}
                 aria-pressed={likeState === "disliked"}
               >
