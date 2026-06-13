@@ -1,0 +1,73 @@
+/**
+ * Global styles.
+ *
+ * Tailwind layers first, then a small set of design-system primitives we want
+ * available without importing a component: a polished focus ring, a scrollbar
+ * hider for horizontal rails, and a couple of utility helpers used by the
+ * cinematic dark theme.
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  html.light {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-bg text-ink font-sans;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  /* Display font reserved for hero and section headings */
+  h1, h2, h3, .display {
+    font-family: var(--font-display), var(--font-inter), ui-sans-serif, system-ui;
+    letter-spacing: -0.02em;
+  }
+
+  /* Reachable focus state across the app */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand/70 ring-offset-2 ring-offset-bg;
+  }
+
+  ::selection {
+    @apply bg-brand/40 text-white;
+  }
+}
+
+@layer utilities {
+  /* Hide native scrollbar on horizontal rails while keeping scroll working */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Subtle linear text gradient used in hero and brand marks */
+  .text-gradient {
+    background: linear-gradient(120deg, #ffffff 0%, #ffd4dc 40%, #ff2d55 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Generic frosted surface */
+  .glass {
+    @apply bg-surface/60 backdrop-blur-xl border border-border/60;
+  }
+}

@@ -1,0 +1,87 @@
+/**
+ * Recommendations route error boundary.
+ *
+ * Catches uncaught render errors inside `/recommendations`. The page itself
+ * already handles cold-start, empty-result, and per-query loading/error
+ * states; this boundary is the last line of defense for unexpected crashes
+ * — bad data shapes, downstream component failures, profile derivation bugs.
+ */
+
+"use client";
+
+import { motion } from "framer-motion";
+import { AlertTriangle, Home, RefreshCw, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { useEffect } from "react";
+
+import { Button } from "@/components/ui";
+
+interface ErrorPageProps {
+  error: Error & { digest?: string };
+  reset: () => void;
+}
+
+export default function RecommendationsError({
+  error,
+  reset,
+}: ErrorPageProps): JSX.Element {
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.error("[recommendations] route error:", error);
+  }, [error]);
+
+  return (
+    <div className="flex min-h-[70svh] items-center justify-center px-4 py-16">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full max-w-xl overflow-hidden rounded-3xl border border-border/60 bg-surface/60 p-8 backdrop-blur-xl sm:p-10"
+        role="alert"
+      >
+        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-danger/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-brand/15 blur-3xl" />
+
+        <div className="relative">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-danger/30 bg-danger/10 text-danger">
+            <AlertTriangle className="h-6 w-6" aria-hidden="true" />
+          </div>
+
+          <h1 className="mt-5 text-2xl font-bold tracking-tight sm:text-3xl">
+            Your picks couldn&apos;t load.
+          </h1>
+          <p className="mt-2 text-sm text-ink-muted sm:text-base">
+            Something went sideways while assembling your recommendations.
+            Try again, or head home and we&apos;ll keep your taste profile
+            intact.
+          </p>
+
+          {error.digest ? (
+            <p className="mt-3 font-mono text-xs text-ink-subtle">
+              ref: {error.digest}
+            </p>
+          ) : null}
+
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Button onClick={reset}>
+              <RefreshCw className="mr-1 h-4 w-4" />
+              Try again
+            </Button>
+            <Button asChild variant="ghost">
+              <Link href="/">
+                <Home className="mr-1 h-4 w-4" />
+                Back home
+              </Link>
+            </Button>
+            <Button asChild variant="ghost">
+              <Link href="/discover">
+                <Sparkles className="mr-1 h-4 w-4" />
+                Browse catalog
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
