@@ -59,7 +59,7 @@ import { useViewHistoryStore } from "@/store/view-history";
 import { useWatchedStore } from "@/store/watched";
 import { useWatchlistStore } from "@/store/watchlist";
 import type { ScoredRecommendation } from "@/services/recommendation/types";
-import type { Video } from "@/types/tmdb";
+import type { Movie, Video } from "@/types/tmdb";
 import type {
   RecommendationSection as RecommendationSectionData,
   ScoredMovie,
@@ -88,6 +88,17 @@ export default function MovieDetailsPage({ params }: PageProps): JSX.Element {
 
   const { data: details, isLoading, isError, error } = useMovieDetails(movieId);
 
+  // MovieDetails has `genres` rather than `genre_ids`; the store layer expects
+  // the lightweight `Movie` shape, so rebuild it here.
+  const movieForStore = useMemo(() => {
+    if (!details) return null;
+    const { genres, ...rest } = details;
+    return {
+      ...rest,
+      genre_ids: genres?.map((g) => g.id) ?? [],
+    } satisfies Movie;
+  }, [details]);
+
   // -- store wiring --------------------------------------------------------
   const recordView = useViewHistoryStore((s) => s.record);
   const inWatchlist = useWatchlistStore((s) => s.has(movieId));
@@ -102,9 +113,9 @@ export default function MovieDetailsPage({ params }: PageProps): JSX.Element {
 
   // Record a view exactly once when details arrive.
   useEffect(() => {
-    if (!details) return;
-    recordView(details);
-  }, [details, recordView]);
+    if (!movieForStore) return;
+    recordView(movieForStore);
+  }, [movieForStore, recordView]);
 
   // -- recommendations -----------------------------------------------------
   const { data: ranked } = useRankedSimilar(movieId, { limit: 12 });
@@ -257,7 +268,7 @@ export default function MovieDetailsPage({ params }: PageProps): JSX.Element {
 
               <Button
                 variant={inWatchlist ? "default" : "outline"}
-                onClick={() => toggleWatchlist(details)}
+                onClick={() => movieForStore && toggleWatchlist(movieForStore)}
               >
                 {inWatchlist ? (
                   <BookmarkCheck className="mr-1 h-4 w-4" />
@@ -269,7 +280,7 @@ export default function MovieDetailsPage({ params }: PageProps): JSX.Element {
 
               <Button
                 variant={isWatched ? "default" : "outline"}
-                onClick={() => toggleWatched(details)}
+                onClick={() => movieForStore && toggleWatched(movieForStore)}
                 aria-pressed={isWatched}
               >
                 {isWatched ? (
@@ -282,7 +293,7 @@ export default function MovieDetailsPage({ params }: PageProps): JSX.Element {
 
               <Button
                 variant={likeState === "liked" ? "default" : "outline"}
-                onClick={() => toggleLike(details)}
+                onClick={() => movieForStore && toggleLike(movieForStore)}
                 aria-pressed={likeState === "liked"}
               >
                 <ThumbsUp className="mr-1 h-4 w-4" />
@@ -291,7 +302,7 @@ export default function MovieDetailsPage({ params }: PageProps): JSX.Element {
 
               <Button
                 variant={likeState === "disliked" ? "default" : "outline"}
-                onClick={() => toggleDislike(details)}
+                onClick={() => movieForStore && toggleDislike(movieForStore)}
                 aria-pressed={likeState === "disliked"}
               >
                 <ThumbsDown className="mr-1 h-4 w-4" />
@@ -300,7 +311,7 @@ export default function MovieDetailsPage({ params }: PageProps): JSX.Element {
 
               <StarRater
                 value={currentRating}
-                onChange={(val) => setRating(details, val)}
+                onChange={(val) => movieForStore && setRating(movieForStore, val)}
               />
             </div>
           </div>
