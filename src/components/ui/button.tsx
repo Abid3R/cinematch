@@ -108,7 +108,7 @@ const Slot = forwardRef<HTMLElement, SlotProps>(function Slot(
   return cloneElement(element, {
     ...rest,
     ref,
-    className: cn(element.props.className, className),
+    className: cn(element.props.className, className as string | undefined),
   } as Partial<typeof element.props>);
 });
 
